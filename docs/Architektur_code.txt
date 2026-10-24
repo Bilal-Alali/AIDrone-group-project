@@ -1,0 +1,42 @@
+flowchart LR
+    classDef onboard_fc fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#fff
+    classDef onboard_pi fill:#065f46,stroke:#10b981,stroke-width:2px,color:#fff
+    classDef offboard fill:#581c87,stroke:#a855f7,stroke-width:2px,color:#fff
+    classDef radio fill:#374151,stroke:#9ca3af,stroke-width:1.5px,color:#fff
+
+    subgraph DRONE ["AUF DER DROHNE"]
+        direction TB
+        subgraph S1 ["Schicht 1: Flugcontroller (MicoAir743 V2 / ArduPilot)"]
+            S1_SENS["Sensoren:<br/>• IMU<br/>• MTF-01P (Optical Flow + Z-LiDAR)<br/>• MT-06 (Horizontale LiDARs)<br/>• (Kompass)"]:::onboard_fc
+            S1_CORE["Verarbeitung:<br/>1. EKF3-Positions- & Lageregelung<br/>2. Stabile Schwebe-Regelung (LOITER)<br/>3. Lokale Hindernis-Notbremsung<br/>4. RC-Override & Motor-Notaus"]:::onboard_fc
+            S1_SENS --> S1_CORE
+        end
+
+        subgraph S2 ["Schicht 2: Raspberry Pi Zero"]
+            S2_CORE["Verarbeitung:<br/>1. mavlink-routerd (UART ↔ WLAN UDP)<br/>2. Ein Failsafe Mechanismus<br/>3. System-Monitoring (CPU/RAM/etc)"]:::onboard_pi
+        end
+
+        S1_CORE <-->|"UART (SERIAL1)<br/>MAVLink 2 (921600 Bd)"| S2_CORE
+    end
+
+    subgraph LINKS ["3 FUNKSTRECKEN"]
+        direction TB
+        L1["1. Fernsteuerung<br/>Radiomaster GX12"]:::radio
+        L2["2. Telemetrie & Steuerbefehle (WLAN 2.4GHz)<br/>UDP"]:::radio
+        L3["3. Analoges Videomaterial<br/>Foxeer T-Rex (Kamera) → Cobra X (Brille) → MS210x USB (Analog->Digital Adapter)"]:::radio
+    end
+
+    subgraph GS ["BODENSTATION + LAPTOP"]
+        direction TB
+        subgraph S3 ["Schicht 3: Aufwändige Berechnungen, SLAM & Navigation"]
+            S3_VID["Bildverarbeitung:<br/>1. Signal-/Rauschfilter<br/>2. Entzerrung<br/>3. (Objekterkennung)"]:::offboard
+            S3_SLAM["Kartierung & Planung:<br/>4. Sensordaten Verarbeitung<br/>5. 2D/3D-Karte<br/>6. Exploration / Pfadplanung<br/>7. Logging für Doku"]:::offboard
+            S3_VID --> S3_SLAM
+        end
+    end
+
+    L1 ==>|"Manuelle Übernahme / Notaus"| S1_CORE
+    S2_CORE <==>|"Pose, LiDAR, Status ↔ Geschwindigkeitsbefehle"| L2
+    L2 <==>|"TBD (Vllt. MAVROS 2)"| S3_SLAM
+    S1_CORE -.->|"Analog-Video"| L3
+    L3 ==>|"USB 2.0 Video-Stream"| S3_VID
