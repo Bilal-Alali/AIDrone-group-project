@@ -7,7 +7,7 @@ flowchart LR
     subgraph DRONE ["AUF DER DROHNE"]
         direction TB
         subgraph S1 ["Schicht 1: Flugcontroller (MicoAir743 V2 / ArduPilot)"]
-            S1_SENS["Sensoren:<br/>• IMU<br/>• MTF-01P (Optical Flow + Z-LiDAR)<br/>• MT-06 (Horizontale LiDARs)<br/>• (Kompass)"]:::onboard_fc
+            S1_SENS["Sensoren:<br/>• IMU<br/>• 1x MTF-01P (Optical Flow + Z-LiDAR)<br/>• 3x MT-06 (Horizontale LiDARs)<br/>• (Kompass)"]:::onboard_fc
             S1_CORE["Verarbeitung:<br/>1. EKF3-Positions- & Lageregelung<br/>2. Stabile Schwebe-Regelung (LOITER)<br/>3. Lokale Hindernis-Notbremsung<br/>4. RC-Override & Motor-Notaus"]:::onboard_fc
             S1_SENS --> S1_CORE
         end
@@ -37,6 +37,6 @@ flowchart LR
 
     L1 ==>|"Manuelle Übernahme / Notaus"| S1_CORE
     S2_CORE <==>|"Pose, LiDAR, Status ↔ Geschwindigkeitsbefehle"| L2
-    L2 <==>|"TBD (Vllt. MAVROS 2)"| S3_SLAM
+    L2 <==>|"MAVROS 2"| S3_SLAM
     S1_CORE -.->|"Analog-Video"| L3
     L3 ==>|"USB 2.0 Video-Stream"| S3_VID
