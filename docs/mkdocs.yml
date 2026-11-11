@@ -1,0 +1,35 @@
+site_name: AI Drone Mapping (Group 2)
+site_description: Master Project WS26/27 - Autonomous Indoor Exploration
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: blue
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+nav:
+  - Home: index.md
+  - Project Planning:
+      - Schedule & Milestones: planning/schedule.md
+      - Roles & Architecture: planning/architecture.md
+  - Hardware & Mechanics:
+      - Raspberry Pi & Wiring: hardware/pi_wiring.md
+      - Sensors (MT-06 & MTF-01P): hardware/sensors.md
+      - 3D Printing & Prop Guard: hardware/3d_printing.md
+  - Flight Controller:
+      - ArduPilot Basic Setup: autopilot/setup.md
+      - EKF Indoor Tuning (No GPS): autopilot/indoor_tuning.md
+      - Safety Concept & Failsafes: autopilot/safety.md
+  - Software & ROS 2:
+      - Companion Computer (mavlink-router): software/companion.md
+      - Video Pipeline: software/video.md
+      - 2D/3D SLAM & Mapping: software/mapping.md
+      - Autonomous Exploration: software/exploration.md
+  - Flight Tests & Troubleshooting:
+      - 10-MZH Hall Flight Logs: testing/hall_logs.md
+      - Known Issues & Crashes: testing/troubleshooting.md
+  - Evaluation:
+      - Map Quality & Drift: evaluation/map_quality.md
+      - Energy & System Limits: evaluation/energy_limits.md
