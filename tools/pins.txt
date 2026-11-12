@@ -1,0 +1,4 @@
+pin 8 GPIO 14 (txd/transit)
+pin 10, GPIO 15 (RXD/transit)
+
+

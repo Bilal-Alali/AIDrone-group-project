@@ -1,0 +1,11 @@
+build/
+install/
+log/
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.npy
+*.db3
+*.bag
+.env
